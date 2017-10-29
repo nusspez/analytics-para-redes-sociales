@@ -67,5 +67,5 @@ if __name__ == '__main__':
 	stream = Stream(auth, listener)
 
 	#stream.filter(track=['bbva', 'bancomer', 'hsbc', 'banamex','banorte'],languages=["es","en"])
-	stream.filter(locations = [-118.65,14.39,-86.59,32.72],languages=["es","en"])
+	stream.filter(track=['dinero', 'prestamo', 'varo', 'quincena'], locations = [-118.65,14.39,-86.59,32.72],languages=["es"])
 	#stream.filter(languages=["es"])

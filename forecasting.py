@@ -37,8 +37,8 @@ class Watson:
             return copy
         confidence = [c['confidence'] for c in classes['classes'] if c['class_name']==classes['top_class']][0]
         return classes['top_class'], confidence
-
+"""
 path_file = '/home/kira/projects/analytics-para-redes-sociales/dataset.csv'
-
 watson = Watson(path_file)
 print(watson.classify("ando bien pudiente"))
+"""
