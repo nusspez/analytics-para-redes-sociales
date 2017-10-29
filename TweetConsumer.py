@@ -45,7 +45,7 @@ class TweetConsumer:
                     tweet['user']["id_str"] == "890452785002676225":
                 pass
             else:
-                if forecast['confidence'] <= 0.5 or forecast['top_class']=='neutro':
+                if forecast['confidence'] <= 0.9 or forecast['top_class']=='neutro':
                     pass
                 else:
                     if forecast['top_class'] == 'prestamo':
@@ -80,6 +80,7 @@ def cleanText(text):
     return ''.join(ch for ch in text if ch not in exclude)
 
 urles = "localhost:9200"
+urles = "https://search-dardo-i5hul2oegv4uygb3flrdxqb3li.us-east-2.es.amazonaws.com/"
 urlMongo = "54.174.5.92:27017"
 urlKafka = "localhost:9092"
 topic = "tweet"
