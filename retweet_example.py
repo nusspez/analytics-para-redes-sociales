@@ -18,9 +18,10 @@ for tweet in tweepy.Cursor(api.search, q='#ocean').items():
     try:
         # Add \n escape character to print() to organize tweets
         print('\nTweet by: @' + tweet.user.screen_name)
-
+        print(tweet)
+        print(dir(tweet))
         # Retweet tweets as they are found
-        tweet.retweet()
+        #tweet.retweet()
         print('Retweeted the tweet')
         print ("_____________________________________________________")
 
