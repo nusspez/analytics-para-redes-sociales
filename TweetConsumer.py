@@ -30,7 +30,7 @@ class TweetConsumer:
             "user": {
                 "id_str": tweet['user']['id_str'],
                 "name": tweet['user']['name'],
-                "id_str": tweet['user']['screen_name'],
+                "screen_name": tweet['user']['screen_name'],
             },
             "entities": {
                 "hashtags": list(map(lambda h: h['text'], tweet['entities']['hashtags']))
