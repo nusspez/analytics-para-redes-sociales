@@ -28,14 +28,15 @@ class Watson:
 
     def classify(self, text, detail=False):
         classes = self.nlc.classify(self.id, text)
+        confidence = [c['confidence'] for c in classes['classes'] if c['class_name']==classes['top_class']][0]
 
         if detail:
             copy = {
                 "top_class": classes['top_class'],
-                "classes": classes['classes']
+                "classes": classes['classes'],
+                "confidence": confidence
             }
             return copy
-        confidence = [c['confidence'] for c in classes['classes'] if c['class_name']==classes['top_class']][0]
         return classes['top_class'], confidence
 """
 path_file = '/home/kira/projects/analytics-para-redes-sociales/dataset.csv'

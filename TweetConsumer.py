@@ -2,9 +2,11 @@ from kafka import KafkaConsumer
 from ElasticSearchClient import ElasticSearchClient
 from sendMongo import SendMongo
 from forecasting import Watson
+from retweet import Advertiser
 import collections,json
 import numpy as np
 import string
+import re
 
 
 class TweetConsumer:
@@ -17,14 +19,43 @@ class TweetConsumer:
         self.urlMongo = urlMongo
         self.mongo = SendMongo(urlMongo)
         self.watson = Watson(path_file)
+        self.ad = Advertiser()
+
     def receiveMessage(self):
         for message in self.consumer:
             tweet = json.loads(message.value.decode('utf8'))
             short_tweet = self.getRelevantFields(tweet)
             self.es.sendTweet('twitter','tweet',tweet['id'],short_tweet)
             #self.mongo.saveTweet("oswaldo",'tweet',iddoc,tweet)
-            print(short_tweet['text'])
-            print(self.classify(short_tweet['text'],detail=False))
+            forecast = self.classify(short_tweet['text'],detail=True)
+            output_str = "{}: {}\n{}: {}\n{}: {}\n{}: {}\n".format(
+                forecast['top_class'],
+                short_tweet['text'],
+                forecast['classes'][0]['class_name'],
+                forecast['classes'][0]['confidence'],
+                forecast['classes'][1]['class_name'],
+                forecast['classes'][1]['confidence'],
+                forecast['classes'][2]['class_name'],
+                forecast['classes'][2]['confidence'],
+            )
+            print(output_str)
+            #self.ad.retweet(tweet['id'],forecast)
+            if tweet['user']['name'] == 'mr octopus' or \
+                    tweet['user']["screen_name"] == "MR_OOCTOPUS" or \
+                    tweet['user']["id_str"] == "890452785002676225":
+                pass
+            else:
+                if forecast['confidence'] <= 0.5 or forecast['top_class']=='neutro':
+                    pass
+                else:
+                    if forecast['top_class'] == 'prestamo':
+                        pub = '%s: Necesitas dinero BBVA esta contigo %s' % (tweet['user']['name'], tweet['text'])
+                    elif forecast['top_class'] == 'inversion':
+                        pub = '%s: No sabes como gastar tu dinero, en BBVA lo incrementas %s' % (tweet['user']['name'], tweet['text'])
+                    self.ad.update(pub[:140], tweet['id'])
+
+
+
     def getRelevantFields(self, tweet):
         copy = {
             "raw_text": tweet['text'],
@@ -44,6 +75,7 @@ class TweetConsumer:
         return self.watson.classify(text, detail=detail)
 
 def cleanText(text):
+    text = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', text)
     exclude = set(string.punctuation)
     return ''.join(ch for ch in text if ch not in exclude)
 
