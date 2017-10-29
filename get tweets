@@ -1,0 +1,18 @@
+#busqueda en twitter
+import tweepy
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
+ACCESS_KEY = ''
+ACCESS_SECRET = ''
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+api = tweepy.API(auth)
+for tweet in tweepy.Cursor(api.search,
+                           q="necesito dinero",
+                           count=100,
+                           result_type="recent",
+                           include_entities=True,
+                           lang="es").items():
+                           a = tweet.created_at, tweet.text
+                           len(a)
+                           print a
